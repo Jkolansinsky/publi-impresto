@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+    <title>Pantalla Digital Cloud</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #000;
+            color: white;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .display-area {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        .sidebar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 380px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            overflow-y: auto;
+            border-right: 2px solid rgba(255, 255, 255, 0.3);
+            z-index: 10;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+
+        .toggle-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            z-index: 20;
+            font-size: 18px;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .toggle-btn.auto-hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .hover-zone {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 80px;
+            z-index: 19;
+        }
+
+        .hover-zone:hover ~ .toggle-btn.auto-hide {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .toggle-btn:hover {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+
+        .display-content,
+        video,
+        iframe {
+            width: 100vw;
+            height: 100vh;
+            object-fit: fill;
+            object-position: center;
+            background: black;
+        }
+
+        .video-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: black;
+        }
+
+        h1 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 {
+            font-size: 16px;
+            margin: 20px 0 10px;
+            color: #60a5fa;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-play {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            font-size: 16px;
+            padding: 15px;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            color: white;
+        }
+
+        .btn-video {
+            background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);
+            color: white;
+        }
+
+        .btn-url {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: white;
+        }
+
+        .btn-import {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .config-box {
+            background: rgba(51, 51, 51, 0.6);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #d1d5db;
+        }
+
+        input[type="number"], select, input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #555;
+            background: #444;
+            color: white;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 100px;
+            font-family: monospace;
+            resize: vertical;
+        }
+
+        .content-list {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .content-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .content-list::-webkit-scrollbar-track {
+            background: rgba(51, 51, 51, 0.3);
+            border-radius: 4px;
+        }
+
+        .content-list::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 4px;
+        }
+
+        .content-item {
+            background: rgba(51, 51, 51, 0.6);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .content-item:hover {
+            background: rgba(58, 58, 58, 0.7);
+        }
+
+        .content-item.active {
+            border: 2px solid #2563eb;
+            background: rgba(30, 58, 138, 0.5);
+        }
+
+        .content-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .content-name {
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 4px;
+        }
+
+        .content-type {
+            font-size: 11px;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .content-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-small {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            margin: 0;
+            font-size: 14px;
+            min-width: 32px;
+        }
+
+        .btn-delete {
+            background: #dc2626;
+        }
+
+        .btn-delete:hover {
+            background: #b91c1c;
+        }
+
+        .btn-move {
+            background: #64748b;
+        }
+
+        .btn-move:hover {
+            background: #475569;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #6b7280;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+
+        .empty-state-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #2a2a2a;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            border: 1px solid #444;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .info-box {
+            background: rgba(30, 64, 175, 0.3);
+            padding: 12px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-size: 12px;
+            border-left: 4px solid #60a5fa;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #93c5fd;
+        }
+
+        .success-box {
+            background: rgba(22, 163, 74, 0.3);
+            border-left-color: #4ade80;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.3);
+            border-left-color: #fbbf24;
+            color: #fef3c7;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: #2563eb;
+            transition: width 0.1s linear;
+            z-index: 5;
+        }
+
+        .url-type-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .url-type-btn {
+            padding: 10px;
+            border: 2px solid #444;
+            background: #333;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .url-type-btn.active {
+            border-color: #2563eb;
+            background: #1e3a8a;
+        }
+
+        code {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="display-area" id="displayArea">
+        <div class="empty-state" id="emptyState">
+            <div class="empty-state-icon">☁️📺</div>
+            <p style="font-size: 20px; margin-bottom: 10px;">Pantalla Digital Cloud</p>
+            <p>Agrega contenido usando URLs de imágenes o videos</p>
+        </div>
+        <div id="displayContent"></div>
+        <div class="progress-bar" id="progressBar" style="width: 0%; display: none;"></div>
+    </div>
+
+    <div class="hover-zone"></div>
+
+    <div class="sidebar" id="sidebar">
+        <h1>☁️ Pantalla Digital Cloud</h1>
+
+        <button class="btn-play" id="playBtn" disabled>
+            <span id="playIcon">▶️</span>
+            <span id="playText">Reproducir</span>
+        </button>
+
+        <div class="config-box">
+            <label>⏱️ Duración por imagen (segundos)</label>
+            <input type="number" id="duration" value="8" min="1" max="120">
+        </div>
+
+        <div class="config-box">
+            <label>✨ Efecto de transición</label>
+            <select id="transition">
+                <option value="fade">Fundido suave</option>
+                <option value="none">Sin efecto</option>
+            </select>
+        </div>
+
+        <div class="config-box">
+            <label>🔁 Reproducción en bucle</label>
+            <select id="loopMode">
+                <option value="true">Sí (repetir siempre)</option>
+                <option value="false">No (parar al final)</option>
+            </select>
+        </div>
+
+        <h2>➕ Agregar Contenido</h2>
+        
+        <button class="btn-add" id="addImageBtn">
+            <span>🖼️</span>
+            <span>Agregar Imagen (URL)</span>
+        </button>
+
+        <button class="btn-video" id="addVideoBtn">
+            <span>🎬</span>
+            <span>Agregar Video (URL)</span>
+        </button>
+
+        <button class="btn-url" id="addWebpageBtn">
+            <span>🌐</span>
+            <span>Agregar Página Web</span>
+        </button>
+
+        <button class="btn-import" id="importJsonBtn">
+            <span>📥</span>
+            <span>Importar Lista JSON</span>
+        </button>
+
+        <div class="info-box success-box">
+            <strong>☁️ Modo Cloud:</strong>
+            • Usa URLs directas de Google Drive, Imgur, Dropbox<br>
+            • Los cambios se guardan en el navegador<br>
+            • Exporta/Importa tu configuración en JSON
+        </div>
+
+        <div class="info-box warning-box">
+            <strong>📌 Cómo obtener URLs:</strong>
+            • <strong>Google Drive:</strong> Hacer público → Copiar enlace directo<br>
+            • <strong>Imgur:</strong> Subir imagen → Copiar "Direct Link"<br>
+            • <strong>Videos:</strong> YouTube, Vimeo (se verá en iframe)
+        </div>
+
+        <h2>📋 Contenido (<span id="itemCount">0</span>)</h2>
+        
+        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+            <button class="btn-import" id="exportJsonBtn" style="flex: 1; font-size: 12px;">
+                📤 Exportar
+            </button>
+            <button class="btn-delete" id="clearAllBtn" style="flex: 1; background: #dc2626; font-size: 12px;">
+                🗑️ Borrar Todo
+            </button>
+        </div>
+        
+        <div class="content-list" id="contentList"></div>
+    </div>
+
+    <button class="toggle-btn" id="toggleBtn">⚙️</button>
+
+    <!-- Modal para Imagen -->
+    <div class="modal" id="imageModal">
+        <div class="modal-content">
+            <h2>🖼️ Agregar Imagen</h2>
+            <label>URL de la imagen</label>
+            <input type="text" id="imageUrl" placeholder="https://i.imgur.com/ejemplo.jpg">
+            <label style="margin-top: 15px;">Duración (segundos)</label>
+            <input type="number" id="imageDuration" value="8" min="1" max="300">
+            <div class="info-box">
+                <strong>💡 Ejemplo de URL válida:</strong>
+                • https://i.imgur.com/abc123.jpg<br>
+                • https://drive.google.com/uc?id=FILE_ID<br>
+                • https://www.dropbox.com/s/xxx/image.jpg?raw=1
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-add" id="addImageConfirmBtn">Agregar</button>
+                <button class="btn-move" id="cancelImageBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Video -->
+    <div class="modal" id="videoModal">
+        <div class="modal-content">
+            <h2>🎬 Agregar Video</h2>
+            <label>URL del video</label>
+            <input type="text" id="videoUrl" placeholder="https://example.com/video.mp4">
+            <div class="info-box">
+                <strong>💡 Formatos soportados:</strong>
+                • <strong>Directo:</strong> .mp4, .webm (URL directa del archivo)<br>
+                • <strong>YouTube:</strong> https://www.youtube.com/embed/VIDEO_ID<br>
+                • <strong>Vimeo:</strong> https://player.vimeo.com/video/VIDEO_ID
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-video" id="addVideoConfirmBtn">Agregar</button>
+                <button class="btn-move" id="cancelVideoBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Página Web -->
+    <div class="modal" id="webpageModal">
+        <div class="modal-content">
+            <h2>🌐 Agregar Página Web</h2>
+            <label>URL de la página</label>
+            <input type="text" id="webpageUrl" placeholder="https://ejemplo.com">
+            <label style="margin-top: 15px;">Duración (segundos)</label>
+            <input type="number" id="webpageDuration" value="15" min="5" max="300">
+            <div class="info-box warning-box">
+                ℹ️ Algunas páginas no permiten ser mostradas en iframe (ej: Google, Facebook)
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-url" id="addWebpageConfirmBtn">Agregar</button>
+                <button class="btn-move" id="cancelWebpageBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Importar JSON -->
+    <div class="modal" id="importModal">
+        <div class="modal-content">
+            <h2>📥 Importar Configuración</h2>
+            <label>Pega tu JSON aquí:</label>
+            <textarea id="importJson" placeholder='{"items": [...], "settings": {...}}'></textarea>
+            <div class="info-box">
+                <strong>💡 Formato esperado:</strong>
+                <code>{"items": [...], "settings": {...}}</code>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-import" id="importConfirmBtn">Importar</button>
+                <button class="btn-move" id="cancelImportBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let items = [];
+        let currentIndex = 0;
+        let isPlaying = false;
+        let timer = null;
+        let progressInterval = null;
+
+        const elements = {
+            sidebar: document.getElementById('sidebar'),
+            playBtn: document.getElementById('playBtn'),
+            playIcon: document.getElementById('playIcon'),
+            playText: document.getElementById('playText'),
+            toggleBtn: document.getElementById('toggleBtn'),
+            contentList: document.getElementById('contentList'),
+            displayContent: document.getElementById('displayContent'),
+            emptyState: document.getElementById('emptyState'),
+            duration: document.getElementById('duration'),
+            transition: document.getElementById('transition'),
+            loopMode: document.getElementById('loopMode'),
+            itemCount: document.getElementById('itemCount'),
+            progressBar: document.getElementById('progressBar'),
+            clearAllBtn: document.getElementById('clearAllBtn'),
+            
+            // Modales
+            imageModal: document.getElementById('imageModal'),
+            imageUrl: document.getElementById('imageUrl'),
+            imageDuration: document.getElementById('imageDuration'),
+            addImageBtn: document.getElementById('addImageBtn'),
+            addImageConfirmBtn: document.getElementById('addImageConfirmBtn'),
+            cancelImageBtn: document.getElementById('cancelImageBtn'),
+            
+            videoModal: document.getElementById('videoModal'),
+            videoUrl: document.getElementById('videoUrl'),
+            addVideoBtn: document.getElementById('addVideoBtn'),
+            addVideoConfirmBtn: document.getElementById('addVideoConfirmBtn'),
+            cancelVideoBtn: document.getElementById('cancelVideoBtn'),
+            
+            webpageModal: document.getElementById('webpageModal'),
+            webpageUrl: document.getElementById('webpageUrl'),
+            webpageDuration: document.getElementById('webpageDuration'),
+            addWebpageBtn: document.getElementById('addWebpageBtn'),
+            addWebpageConfirmBtn: document.getElementById('addWebpageConfirmBtn'),
+            cancelWebpageBtn: document.getElementById('cancelWebpageBtn'),
+            
+            importModal: document.getElementById('importModal'),
+            importJson: document.getElementById('importJson'),
+            importJsonBtn: document.getElementById('importJsonBtn'),
+            importConfirmBtn: document.getElementById('importConfirmBtn'),
+            cancelImportBtn: document.getElementById('cancelImportBtn'),
+            exportJsonBtn: document.getElementById('exportJsonBtn')
+        };
+
+        // Guardar en localStorage
+        function saveData() {
+            const config = {
+                items,
+                currentIndex,
+                isPlaying,
+                settings: {
+                    duration: elements.duration.value,
+                    transition: elements.transition.value,
+                    loopMode: elements.loopMode.value
+                }
+            };
+            localStorage.setItem('digitalSignageConfig', JSON.stringify(config));
+        }
+
+        // Cargar desde localStorage
+        function loadData() {
+            try {
+                const stored = localStorage.getItem('digitalSignageConfig');
+                if (!stored) return;
+
+                const config = JSON.parse(stored);
+                items = config.items || [];
+                currentIndex = config.currentIndex || 0;
+                isPlaying = config.isPlaying || false;
+
+                const s = config.settings || {};
+                elements.duration.value = s.duration || 8;
+                elements.transition.value = s.transition || 'fade';
+                elements.loopMode.value = s.loopMode || 'true';
+
+                updateUI();
+
+                if (items.length > 0) {
+                    elements.emptyState.style.display = 'none';
+                    if (isPlaying) {
+                        elements.playIcon.textContent = '⏸️';
+                        elements.playText.textContent = 'Pausar';
+                        showCurrentItem();
+                        setTimeout(() => {
+                            elements.sidebar.classList.add('hidden');
+                        }, 2000);
+                    } else {
+                        showCurrentItemNoAutoplay();
+                    }
+                }
+
+                if (items.length > 0 && !isPlaying) {
+                    setTimeout(() => {
+                        if (!isPlaying) elements.playBtn.click();
+                    }, 3000);
+                }
+            } catch (e) {
+                console.error('Error cargando configuración:', e);
+            }
+        }
+
+        function updateUI() {
+            elements.itemCount.textContent = items.length;
+            elements.playBtn.disabled = items.length === 0;
+
+            elements.contentList.innerHTML = '';
+            items.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'content-item' + (index === currentIndex && isPlaying ? ' active' : '');
+                
+                const icon = item.type === 'image' ? '🖼️' : 
+                            item.type === 'video' ? '🎬' : '🌐';
+                const type = item.type === 'image' ? 'Imagen' : 
+                            item.type === 'video' ? 'Video' : 'Página Web';
+                const name = item.name || getUrlFilename(item.src);
+                
+                div.innerHTML = `
+                    <div class="content-info">
+                        <div class="content-name">${name}</div>
+                        <div class="content-type">
+                            <span>${icon}</span>
+                            <span>${type}</span>
+                        </div>
+                    </div>
+                    <div class="content-actions">
+                        <button class="btn-small btn-move" onclick="moveItem(${index}, -1)" title="Subir">↑</button>
+                        <button class="btn-small btn-move" onclick="moveItem(${index}, 1)" title="Bajar">↓</button>
+                        <button class="btn-small btn-delete" onclick="deleteItem(${index})" title="Eliminar">🗑️</button>
+                    </div>
+                `;
+                elements.contentList.appendChild(div);
+            });
+        }
+
+        function getUrlFilename(url) {
+            try {
+                const urlObj = new URL(url);
+                const path = urlObj.pathname;
+                return path.split('/').pop() || url.substring(0, 30) + '...';
+            } catch {
+                return url.substring(0, 30) + '...';
+            }
+        }
+
+        function startProgress(duration) {
+            elements.progressBar.style.display = 'block';
+            elements.progressBar.style.width = '0%';
+            
+            const startTime = Date.now();
+            const totalTime = duration * 1000;
+            
+            progressInterval = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min((elapsed / totalTime) * 100, 100);
+                elements.progressBar.style.width = progress + '%';
+                if (progress >= 100) clearInterval(progressInterval);
+            }, 50);
+        }
+
+        function showCurrentItem() {
+            if (!isPlaying || items.length === 0) return;
+
+            clearInterval(progressInterval);
+            clearTimeout(timer);
+            
+            const item = items[currentIndex];
+            if (!item) return;
+
+            elements.emptyState.style.display = 'none';
+            const transition = elements.transition.value;
+            const className = transition === 'fade' ? 'fade-in' : '';
+
+            if (item.type === 'image') {
+                elements.displayContent.innerHTML = `
+                    <img src="${item.src}" class="display-content ${className}" 
+                         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 fill=%22%23666%22%3EError al cargar%3C/text%3E%3C/svg%3E'">
+                `;
+                const duration = item.duration || parseInt(elements.duration.value) || 8;
+                startProgress(duration);
+                timer = setTimeout(nextItem, duration * 1000);
+                
+            } else if (item.type === 'video') {
+                // Detectar si es YouTube o Vimeo
+                if (item.src.includes('youtube.com') || item.src.includes('youtu.be') || item.src.includes('vimeo.com')) {
+                    let embedUrl = item.src;
+                    if (item.src.includes('watch?v=')) {
+                        embedUrl = item.src.replace('watch?v=', 'embed/');
+                    }
+                    elements.displayContent.innerHTML = `
+                        <iframe src="${embedUrl}" class="${className}" 
+                                allow="autoplay; fullscreen" allowfullscreen></iframe>
+                    `;
+                    const duration = item.duration || 30;
+                    startProgress(duration);
+                    timer = setTimeout(nextItem, duration * 1000);
+                } else {
+                    elements.displayContent.innerHTML = `
+                        <div class="video-container ${className}">
+                            <video class="display-content" autoplay muted playsinline>
+                                <source src="${item.src}" type="video/mp4">
+                                Tu navegador no soporta video.
+                            </video>
+                        </div>
+                    `;
+                    const video = elements.displayContent.querySelector('video');
+                    if (video) {
+                        video.addEventListener('ended', nextItem);
+                        video.addEventListener('error', nextItem);
+                    }
+                    elements.progressBar.style.display = 'none';
+                }
+                
+            } else if (item.type === 'webpage') {
+                elements.displayContent.innerHTML = `
+                    <iframe src="${item.src}" class="${className}" 
+                            sandbox="allow-same-origin allow-scripts allow-forms"></iframe>
+                `;
+                const duration = item.duration || parseInt(elements.duration.value) || 15;
+                startProgress(duration);
+                timer = setTimeout(nextItem, duration * 1000);
+            }
+
+            updateUI();
+        }
+
+        
+
+
+function showCurrentItemNoAutoplay() {
+            if (items.length === 0) return;
+            const item = items[currentIndex];
+            const transition = elements.transition.value;
+            const className = transition === 'fade' ? 'fade-in' : '';
+
+            if (item.type === 'image') {
+                elements.displayContent.innerHTML = `
+                    <img src="${item.src}" class="display-content ${className}">
+                `;
+            } else if (item.type === 'video') {
+                if (item.src.includes('youtube.com') || item.src.includes('youtu.be') || item.src.includes('vimeo.com')) {
+                    let embedUrl = item.src;
+                    if (item.src.includes('watch?v=')) {
+                        embedUrl = item.src.replace('watch?v=', 'embed/');
+                    }
+                    elements.displayContent.innerHTML = `
+                        <iframe src="${embedUrl}" class="${className}"></iframe>
+                    `;
+                } else {
+                    elements.displayContent.innerHTML = `
+                        <div class="video-container ${className}">
+                            <video class="display-content" preload="metadata">
+                                <source src="${item.src}" type="video/mp4">
+                            </video>
+                        </div>
+                    `;
+                }
+            } else if (item.type === 'webpage') {
+                elements.displayContent.innerHTML = `
+                    <iframe src="${item.src}" class="${className}"></iframe>
+                `;
+            }
+        }
+
+        function nextItem() {
+            clearTimeout(timer);
+            clearInterval(progressInterval);
+            
+            if (currentIndex >= items.length - 1) {
+                if (elements.loopMode.value === 'true') {
+                    currentIndex = 0;
+                    showCurrentItem();
+                } else {
+                    isPlaying = false;
+                    elements.playIcon.textContent = '▶️';
+                    elements.playText.textContent = 'Reproducir';
+                    currentIndex = 0;
+                    updateUI();
+                }
+            } else {
+                currentIndex++;
+                showCurrentItem();
+            }
+        }
+
+        function deleteItem(index) {
+            if (!confirm('¿Eliminar este elemento?')) return;
+            items.splice(index, 1);
+            if (currentIndex >= items.length) currentIndex = 0;
+            updateUI();
+            saveData();
+            if (isPlaying && items.length > 0) showCurrentItem();
+            else if (items.length === 0) {
+                elements.displayContent.innerHTML = '';
+                elements.emptyState.style.display = 'block';
+            }
+        }
+
+        function moveItem(index, direction) {
+            const newIndex = index + direction;
+            if (newIndex >= 0 && newIndex < items.length) {
+                [items[index], items[newIndex]] = [items[newIndex], items[index]];
+                if (currentIndex === index) currentIndex = newIndex;
+                else if (currentIndex === newIndex) currentIndex = index;
+                updateUI();
+                saveData();
+            }
+        }
+
+        // Event Listeners
+        elements.playBtn?.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            if (isPlaying) {
+                elements.playIcon.textContent = '⏸️';
+                elements.playText.textContent = 'Pausar';
+                showCurrentItem();
+            } else {
+                elements.playIcon.textContent = '▶️';
+                elements.playText.textContent = 'Reproducir';
+                clearTimeout(timer);
+                clearInterval(progressInterval);
+                elements.progressBar.style.display = 'none';
+            }
+            saveData();
+        });
+
+        elements.toggleBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            elements.sidebar.classList.toggle('hidden');
+        });
+
+        elements.clearAllBtn?.addEventListener('click', () => {
+            if (confirm('¿Estás seguro de que deseas borrar todo el contenido guardado?')) {
+                items = [];
+                currentIndex = 0;
+                isPlaying = false;
+                saveData();
+                elements.displayContent.innerHTML = '';
+                elements.emptyState.style.display = 'block';
+                updateUI();
+            }
+        });
+
+        elements.duration?.addEventListener('change', saveData);
+        elements.transition?.addEventListener('change', saveData);
+        elements.loopMode?.addEventListener('change', saveData);
+
+        // Modal Imagen
+        elements.addImageBtn?.addEventListener('click', () => {
+            elements.imageModal.classList.add('show');
+        });
+
+        elements.cancelImageBtn?.addEventListener('click', () => {
+            elements.imageModal.classList.remove('show');
+            elements.imageUrl.value = '';
+        });
+
+        elements.addImageConfirmBtn?.addEventListener('click', () => {
+            const url = elements.imageUrl.value.trim();
+            const duration = parseInt(elements.imageDuration.value);
+            
+            if (!url) {
+                alert('⚠️ Ingresa una URL válida');
+                return;
+            }
+            
+            items.push({
+                id: Date.now(),
+                type: 'image',
+                src: url,
+                name: getUrlFilename(url),
+                duration: duration
+            });
+
+            elements.imageModal.classList.remove('show');
+            elements.imageUrl.value = '';
+            updateUI();
+            saveData();
+
+            if (!isPlaying && items.length === 1) {
+                setTimeout(() => { if (!isPlaying) elements.playBtn.click(); }, 500);
+            }
+        });
+
+        // Modal Video
+        elements.addVideoBtn?.addEventListener('click', () => {
+            elements.videoModal.classList.add('show');
+        });
+
+        elements.cancelVideoBtn?.addEventListener('click', () => {
+            elements.videoModal.classList.remove('show');
+            elements.videoUrl.value = '';
+        });
+
+        elements.addVideoConfirmBtn?.addEventListener('click', () => {
+            const url = elements.videoUrl.value.trim();
+            
+            if (!url) {
+                alert('⚠️ Ingresa una URL válida');
+                return;
+            }
+            
+            items.push({
+                id: Date.now(),
+                type: 'video',
+                src: url,
+                name: getUrlFilename(url),
+                duration: 30
+            });
+
+            elements.videoModal.classList.remove('show');
+            elements.videoUrl.value = '';
+            updateUI();
+            saveData();
+
+            if (!isPlaying && items.length === 1) {
+                setTimeout(() => { if (!isPlaying) elements.playBtn.click(); }, 500);
+            }
+        });
+
+        // Modal Webpage
+        elements.addWebpageBtn?.addEventListener('click', () => {
+            elements.webpageModal.classList.add('show');
+        });
+
+        elements.cancelWebpageBtn?.addEventListener('click', () => {
+            elements.webpageModal.classList.remove('show');
+            elements.webpageUrl.value = '';
+        });
+
+        elements.addWebpageConfirmBtn?.addEventListener('click', () => {
+            const url = elements.webpageUrl.value.trim();
+            const duration = parseInt(elements.webpageDuration.value);
+            
+            if (!url) {
+                alert('⚠️ Ingresa una URL válida');
+                return;
+            }
+            
+            items.push({
+                id: Date.now(),
+                type: 'webpage',
+                src: url,
+                name: getUrlFilename(url),
+                duration: duration
+            });
+
+            elements.webpageModal.classList.remove('show');
+            elements.webpageUrl.value = '';
+            updateUI();
+            saveData();
+
+            if (!isPlaying && items.length === 1) {
+                setTimeout(() => { if (!isPlaying) elements.playBtn.click(); }, 500);
+            }
+        });
+
+        // Importar/Exportar JSON
+        elements.exportJsonBtn?.addEventListener('click', () => {
+            const config = {
+                items,
+                settings: {
+                    duration: elements.duration.value,
+                    transition: elements.transition.value,
+                    loopMode: elements.loopMode.value
+                }
+            };
+            
+            const json = JSON.stringify(config, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `pantalla-digital-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        elements.importJsonBtn?.addEventListener('click', () => {
+            elements.importModal.classList.add('show');
+        });
+
+        elements.cancelImportBtn?.addEventListener('click', () => {
+            elements.importModal.classList.remove('show');
+            elements.importJson.value = '';
+        });
+
+        elements.importConfirmBtn?.addEventListener('click', () => {
+            try {
+                const json = elements.importJson.value.trim();
+                if (!json) {
+                    alert('⚠️ Pega el JSON primero');
+                    return;
+                }
+
+                const config = JSON.parse(json);
+                
+                if (config.items && Array.isArray(config.items)) {
+                    items = config.items;
+                }
+                
+                if (config.settings) {
+                    elements.duration.value = config.settings.duration || 8;
+                    elements.transition.value = config.settings.transition || 'fade';
+                    elements.loopMode.value = config.settings.loopMode || 'true';
+                }
+
+                elements.importModal.classList.remove('show');
+                elements.importJson.value = '';
+                updateUI();
+                saveData();
+                alert('✅ Configuración importada correctamente');
+
+                if (!isPlaying && items.length > 0) {
+                    setTimeout(() => { if (!isPlaying) elements.playBtn.click(); }, 500);
+                }
+            } catch (e) {
+                alert('❌ Error al importar JSON:\n' + e.message);
+            }
+        });
+
+        // Iniciar
+        loadData();
+
+        // Auto-ocultar botón toggle
+        let hideButtonTimeout;
+        function autoHideToggleButton() {
+            clearTimeout(hideButtonTimeout);
+            elements.toggleBtn.classList.remove('auto-hide');
+            hideButtonTimeout = setTimeout(() => {
+                if (!elements.sidebar.classList.contains('hidden')) return;
+                elements.toggleBtn.classList.add('auto-hide');
+            }, 3000);
+        }
+
+        document.addEventListener('mousemove', () => {
+            if (elements.sidebar.classList.contains('hidden')) {
+                autoHideToggleButton();
+            }
+        });
+
+        setTimeout(autoHideToggleButton, 3000);
+    </script>
+</body>
+</html>
