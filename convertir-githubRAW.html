@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Convertir enlace GitHub a imagen RAW</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    input, button { padding: 8px; margin: 5px 0; width: 100%; }
+    img { margin-top: 20px; max-width: 500px; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+  <h2>Generador de enlace RAW de GitHub</h2>
+  
+  <!-- Campo para pegar el enlace -->
+  <label for="githubLink">Pega tu enlace de GitHub:</label>
+  <input type="text" id="githubLink" placeholder="https://github.com/usuario/repositorio/blob/main/carpeta/xxx.jpg">
+  
+  <button onclick="convertir()">Convertir y mostrar imagen</button>
+  
+  <!-- Resultado -->
+  <p id="resultado"></p>
+  <img id="imagen" src="" alt="Imagen convertida">
+  
+  <script>
+    function convertir() {
+      let link = document.getElementById("githubLink").value.trim();
+      
+      // Verifica que sea un enlace válido de GitHub con /blob/
+      if (link.includes("github.com") && link.includes("/blob/")) {
+        // Reemplaza la parte de github.com/.../blob/ por raw.githubusercontent.com/.../
+        let rawLink = link
+          .replace("https://github.com/", "https://raw.githubusercontent.com/")
+          .replace("/blob/", "/");
+        
+        document.getElementById("resultado").textContent = rawLink;
+        document.getElementById("imagen").src = rawLink;
+      } else {
+        document.getElementById("resultado").textContent = "El enlace no es válido de GitHub con /blob/";
+        document.getElementById("imagen").src = "";
+      }
+    }
+  </script>
+</body>
+</html>
