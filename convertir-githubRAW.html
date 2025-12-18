@@ -1,45 +1,764 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Convertir enlace GitHub a imagen RAW</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    input, button { padding: 8px; margin: 5px 0; width: 100%; }
-    img { margin-top: 20px; max-width: 500px; border: 1px solid #ccc; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador config.json - GitHub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #24292e 0%, #0d1117 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 36px;
+            background: linear-gradient(135deg, #58a6ff 0%, #1f6feb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            color: #58a6ff;
+            margin-bottom: 20px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            color: #79c0ff;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .info-box {
+            background: rgba(88, 166, 255, 0.1);
+            border-left: 4px solid #58a6ff;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .success-box {
+            background: rgba(46, 160, 67, 0.1);
+            border-left-color: #2ea043;
+        }
+
+        .warning-box {
+            background: rgba(187, 128, 9, 0.1);
+            border-left-color: #bb8009;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #c9d1d9;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #58a6ff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(88, 166, 255, 0.4);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #58a6ff 0%, #1f6feb 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #2ea043 0%, #1a7f37 100%);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f85149 0%, #da3633 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(110, 118, 129, 0.4);
+            color: white;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .items-list {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .items-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .items-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        .items-list::-webkit-scrollbar-thumb {
+            background: rgba(88, 166, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        .item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: #c9d1d9;
+            margin-bottom: 5px;
+        }
+
+        .item-details {
+            font-size: 13px;
+            color: #8b949e;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            resize: vertical;
+            background: rgba(0, 0, 0, 0.3);
+            color: #58a6ff;
+        }
+
+        code {
+            background: rgba(110, 118, 129, 0.4);
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #79c0ff;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #8b949e;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 15px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .step-badge {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #58a6ff;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h2>Generador de enlace RAW de GitHub</h2>
-  
-  <!-- Campo para pegar el enlace -->
-  <label for="githubLink">Pega tu enlace de GitHub:</label>
-  <input type="text" id="githubLink" placeholder="https://github.com/usuario/repositorio/blob/main/carpeta/xxx.jpg">
-  
-  <button onclick="convertir()">Convertir y mostrar imagen</button>
-  
-  <!-- Resultado -->
-  <p id="resultado"></p>
-  <img id="imagen" src="" alt="Imagen convertida">
-  
-  <script>
-    function convertir() {
-      let link = document.getElementById("githubLink").value.trim();
-      
-      // Verifica que sea un enlace válido de GitHub con /blob/
-      if (link.includes("github.com") && link.includes("/blob/")) {
-        // Reemplaza la parte de github.com/.../blob/ por raw.githubusercontent.com/.../
-        let rawLink = link
-          .replace("https://github.com/", "https://raw.githubusercontent.com/")
-          .replace("/blob/", "/");
-        
-        document.getElementById("resultado").textContent = rawLink;
-        document.getElementById("imagen").src = rawLink;
-      } else {
-        document.getElementById("resultado").textContent = "El enlace no es válido de GitHub con /blob/";
-        document.getElementById("imagen").src = "";
-      }
-    }
-  </script>
+    <div class="container">
+        <h1>🔧 Generador de config.json para GitHub</h1>
+
+        <!-- Instrucciones -->
+        <div class="card">
+            <h2>📘 Cómo usar GitHub para tu pantalla digital</h2>
+            
+            <div style="margin-bottom: 20px;">
+                <div style="display: flex; align-items: start; margin-bottom: 15px;">
+                    <span class="step-badge">1</span>
+                    <div>
+                        <strong>Crea un repositorio en GitHub</strong>
+                        <p style="color: #8b949e; margin-top: 5px;">Puede ser público o privado</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: start; margin-bottom: 15px;">
+                    <span class="step-badge">2</span>
+                    <div>
+                        <strong>Crea una carpeta para tus imágenes</strong>
+                        <p style="color: #8b949e; margin-top: 5px;">Ejemplo: <code>imagenes/</code> o <code>media/</code></p>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: start; margin-bottom: 15px;">
+                    <span class="step-badge">3</span>
+                    <div>
+                        <strong>Sube tus imágenes a esa carpeta</strong>
+                        <p style="color: #8b949e; margin-top: 5px;">Arrastra y suelta desde tu computadora</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: start;">
+                    <span class="step-badge">4</span>
+                    <div>
+                        <strong>Usa esta herramienta para generar el config.json</strong>
+                        <p style="color: #8b949e; margin-top: 5px;">Automáticamente escaneará todas tus imágenes</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auto-generar desde carpeta GitHub -->
+        <div class="card">
+            <h2>🚀 Auto-generar JSON desde GitHub</h2>
+            
+            <div class="info-box">
+                <strong>💡 Modo Automático:</strong> Ingresa los datos de tu repositorio y esta herramienta escaneará automáticamente todas las imágenes en la carpeta.
+            </div>
+
+            <div class="grid-3">
+                <div class="input-group">
+                    <label>👤 Usuario de GitHub</label>
+                    <input type="text" id="githubUser" placeholder="tu-usuario">
+                </div>
+                <div class="input-group">
+                    <label>📦 Nombre del Repositorio</label>
+                    <input type="text" id="githubRepo" placeholder="pantalla-digital">
+                </div>
+                <div class="input-group">
+                    <label>📁 Carpeta de imágenes</label>
+                    <input type="text" id="githubFolder" placeholder="imagenes" value="imagenes">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>🌿 Rama (branch)</label>
+                <input type="text" id="githubBranch" placeholder="main" value="main">
+            </div>
+
+            <div class="info-box warning-box">
+                <strong>⚠️ Requisitos:</strong><br>
+                • El repositorio debe ser <strong>público</strong> o tener acceso configurado<br>
+                • Las imágenes deben estar en formato: JPG, PNG, GIF, WEBP<br>
+                • Los videos deben estar en formato: MP4
+            </div>
+
+            <button class="btn btn-primary" id="scanGithubBtn">
+                <span>🔍</span>
+                <span>Escanear Carpeta de GitHub</span>
+            </button>
+
+            <div id="scanResult" style="display: none; margin-top: 15px;">
+                <div class="success-box">
+                    <strong>✅ Escaneo completado</strong><br>
+                    Se encontraron <strong><span id="filesFound">0</span> archivos</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Convertidor manual de URL -->
+        <div class="card">
+            <h2>🔗 Convertidor de URL GitHub (Manual)</h2>
+            
+            <div class="info-box">
+                <strong>Para agregar archivos individuales:</strong> Pega el link de GitHub y lo convertiremos a RAW URL.
+            </div>
+
+            <div class="input-group">
+                <label>URL de GitHub (blob)</label>
+                <input type="text" id="githubBlobUrl" placeholder="https://github.com/usuario/repo/blob/main/imagenes/foto.jpg">
+            </div>
+
+            <button class="btn btn-secondary" id="convertUrlBtn" style="margin-bottom: 15px;">
+                <span>🔄</span>
+                <span>Convertir a URL RAW</span>
+            </button>
+
+            <div id="convertResult" style="display: none;">
+                <label>✅ URL RAW (usa esta):</label>
+                <input type="text" id="rawUrl" readonly style="background: rgba(46, 160, 67, 0.1); border-color: #2ea043;">
+                <button class="btn btn-success btn-small" id="copyRawBtn" style="margin-top: 10px;">📋 Copiar</button>
+            </div>
+        </div>
+
+        <!-- Agregar items manualmente -->
+        <div class="card">
+            <h2>➕ Agregar Contenido Manual</h2>
+            
+            <div class="grid-3" style="margin-bottom: 15px;">
+                <div class="input-group">
+                    <label>URL RAW del archivo</label>
+                    <input type="text" id="itemUrl" placeholder="https://raw.githubusercontent.com/...">
+                </div>
+                <div class="input-group">
+                    <label>Tipo</label>
+                    <select id="itemType">
+                        <option value="image">🖼️ Imagen</option>
+                        <option value="video">🎬 Video</option>
+                        <option value="webpage">🌐 Página Web</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Duración (seg)</label>
+                    <input type="number" id="itemDuration" value="8" min="1">
+                </div>
+            </div>
+
+            <button class="btn btn-success" id="addItemBtn">
+                <span>➕</span>
+                <span>Agregar Item</span>
+            </button>
+        </div>
+
+        <!-- Lista de items -->
+        <div class="card">
+            <h2>📋 Contenido en config.json (<span id="itemCount">0</span>)</h2>
+            
+            <div id="itemsList" class="items-list">
+                <div class="empty-state">
+                    <div class="empty-icon">📦</div>
+                    <p>Usa el escáner automático o agrega items manualmente</p>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-danger" id="clearAllBtn">
+                    <span>🗑️</span>
+                    <span>Borrar Todo</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Configuración -->
+        <div class="card">
+            <h2>⚙️ Configuración General</h2>
+            
+            <div class="grid-3">
+                <div class="input-group">
+                    <label>⏱️ Duración por defecto (seg)</label>
+                    <input type="number" id="defaultDuration" value="8" min="1">
+                </div>
+                <div class="input-group">
+                    <label>✨ Transición</label>
+                    <select id="transition">
+                        <option value="fade">Fundido</option>
+                        <option value="none">Sin efecto</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>🔁 Modo bucle</label>
+                    <select id="loopMode">
+                        <option value="true">Sí</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- JSON generado -->
+        <div class="card">
+            <h2>📄 Tu archivo config.json</h2>
+            
+            <div class="success-box">
+                <strong>✅ Siguiente paso:</strong><br>
+                1. Descarga el <code>config.json</code><br>
+                2. Súbelo a la raíz de tu repositorio de GitHub<br>
+                3. La URL será: <code>https://raw.githubusercontent.com/USUARIO/REPO/main/config.json</code>
+            </div>
+
+            <textarea id="jsonOutput" readonly></textarea>
+
+            <div class="button-group">
+                <button class="btn btn-success" id="copyJsonBtn">
+                    <span>📋</span>
+                    <span>Copiar JSON</span>
+                </button>
+                <button class="btn btn-primary" id="downloadJsonBtn">
+                    <span>💾</span>
+                    <span>Descargar config.json</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let items = [];
+
+        const elements = {
+            githubUser: document.getElementById('githubUser'),
+            githubRepo: document.getElementById('githubRepo'),
+            githubFolder: document.getElementById('githubFolder'),
+            githubBranch: document.getElementById('githubBranch'),
+            scanGithubBtn: document.getElementById('scanGithubBtn'),
+            scanResult: document.getElementById('scanResult'),
+            filesFound: document.getElementById('filesFound'),
+            githubBlobUrl: document.getElementById('githubBlobUrl'),
+            convertUrlBtn: document.getElementById('convertUrlBtn'),
+            convertResult: document.getElementById('convertResult'),
+            rawUrl: document.getElementById('rawUrl'),
+            copyRawBtn: document.getElementById('copyRawBtn'),
+            itemUrl: document.getElementById('itemUrl'),
+            itemType: document.getElementById('itemType'),
+            itemDuration: document.getElementById('itemDuration'),
+            addItemBtn: document.getElementById('addItemBtn'),
+            itemsList: document.getElementById('itemsList'),
+            itemCount: document.getElementById('itemCount'),
+            clearAllBtn: document.getElementById('clearAllBtn'),
+            defaultDuration: document.getElementById('defaultDuration'),
+            transition: document.getElementById('transition'),
+            loopMode: document.getElementById('loopMode'),
+            jsonOutput: document.getElementById('jsonOutput'),
+            copyJsonBtn: document.getElementById('copyJsonBtn'),
+            downloadJsonBtn: document.getElementById('downloadJsonBtn')
+        };
+
+        // Escanear carpeta de GitHub
+        elements.scanGithubBtn.addEventListener('click', async () => {
+            const user = elements.githubUser.value.trim();
+            const repo = elements.githubRepo.value.trim();
+            const folder = elements.githubFolder.value.trim();
+            const branch = elements.githubBranch.value.trim() || 'main';
+
+            if (!user || !repo || !folder) {
+                alert('⚠️ Completa todos los campos');
+                return;
+            }
+
+            elements.scanGithubBtn.disabled = true;
+            elements.scanGithubBtn.innerHTML = '<span class="loading"></span><span>Escaneando...</span>';
+
+            try {
+                const apiUrl = `https://api.github.com/repos/${user}/${repo}/contents/${folder}?ref=${branch}`;
+                const response = await fetch(apiUrl);
+
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                }
+
+                const files = await response.json();
+                
+                // Filtrar solo imágenes y videos
+                const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.mp4', '.webm'];
+                const mediaFiles = files.filter(file => {
+                    const ext = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
+                    return validExtensions.includes(ext);
+                });
+
+                if (mediaFiles.length === 0) {
+                    alert('⚠️ No se encontraron imágenes o videos en esa carpeta');
+                    return;
+                }
+
+                // Limpiar items existentes
+                items = [];
+
+                // Agregar todos los archivos encontrados
+                mediaFiles.forEach(file => {
+                    const ext = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
+                    const isVideo = ['.mp4', '.webm'].includes(ext);
+                    
+                    // Convertir a URL RAW
+                    const rawUrl = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/${folder}/${file.name}`;
+
+                    items.push({
+                        type: isVideo ? 'video' : 'image',
+                        src: rawUrl,
+                        duration: parseInt(elements.defaultDuration.value),
+                        name: file.name
+                    });
+                });
+
+                elements.filesFound.textContent = mediaFiles.length;
+                elements.scanResult.style.display = 'block';
+                updateUI();
+
+            } catch (error) {
+                alert('❌ Error al escanear GitHub:\n' + error.message);
+            } finally {
+                elements.scanGithubBtn.disabled = false;
+                elements.scanGithubBtn.innerHTML = '<span>🔍</span><span>Escanear Carpeta de GitHub</span>';
+            }
+        });
+
+        // Convertir URL de GitHub a RAW
+        elements.convertUrlBtn.addEventListener('click', () => {
+            const url = elements.githubBlobUrl.value.trim();
+
+            if (!url) {
+                alert('⚠️ Pega una URL de GitHub primero');
+                return;
+            }
+
+            try {
+                // Convertir blob a raw
+                let rawUrl = url.replace('github.com', 'raw.githubusercontent.com')
+                                .replace('/blob/', '/');
+
+                elements.rawUrl.value = rawUrl;
+                elements.convertResult.style.display = 'block';
+                elements.itemUrl.value = rawUrl;
+
+            } catch (error) {
+                alert('❌ Error al convertir URL: ' + error.message);
+            }
+        });
+
+        elements.copyRawBtn.addEventListener('click', () => {
+            elements.rawUrl.select();
+            document.execCommand('copy');
+            alert('✅ URL copiada');
+        });
+
+        // Agregar item manual
+        elements.addItemBtn.addEventListener('click', () => {
+            const url = elements.itemUrl.value.trim();
+            const type = elements.itemType.value;
+            const duration = parseInt(elements.itemDuration.value);
+
+            if (!url) {
+                alert('⚠️ Ingresa una URL válida');
+                return;
+            }
+
+            items.push({
+                type: type,
+                src: url,
+                duration: duration,
+                name: getFilename(url)
+            });
+
+            elements.itemUrl.value = '';
+            elements.githubBlobUrl.value = '';
+            elements.convertResult.style.display = 'none';
+
+            updateUI();
+        });
+
+        function getFilename(url) {
+            try {
+                return url.split('/').pop() || 'Archivo';
+            } catch {
+                return 'Archivo';
+            }
+        }
+
+        function updateUI() {
+            elements.itemCount.textContent = items.length;
+
+            if (items.length === 0) {
+                elements.itemsList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📦</div>
+                        <p>Usa el escáner automático o agrega items manualmente</p>
+                    </div>
+                `;
+            } else {
+                elements.itemsList.innerHTML = '';
+                items.forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'item';
+
+                    const icon = item.type === 'image' ? '🖼️' : 
+                                item.type === 'video' ? '🎬' : '🌐';
+
+                    div.innerHTML = `
+                        <div class="item-info">
+                            <div class="item-name">${icon} ${item.name}</div>
+                            <div class="item-details">
+                                ${item.type} • ${item.duration}s<br>
+                                <small>${item.src.substring(0, 70)}...</small>
+                            </div>
+                        </div>
+                        <div class="item-actions">
+                            <button class="btn btn-secondary btn-small" onclick="moveItem(${index}, -1)">↑</button>
+                            <button class="btn btn-secondary btn-small" onclick="moveItem(${index}, 1)">↓</button>
+                            <button class="btn btn-danger btn-small" onclick="deleteItem(${index})">🗑️</button>
+                        </div>
+                    `;
+
+                    elements.itemsList.appendChild(div);
+                });
+            }
+
+            updateJSON();
+        }
+
+        function moveItem(index, direction) {
+            const newIndex = index + direction;
+            if (newIndex >= 0 && newIndex < items.length) {
+                [items[index], items[newIndex]] = [items[newIndex], items[index]];
+                updateUI();
+            }
+        }
+
+        function deleteItem(index) {
+            if (confirm('¿Eliminar este item?')) {
+                items.splice(index, 1);
+                updateUI();
+            }
+        }
+
+        elements.clearAllBtn.addEventListener('click', () => {
+            if (confirm('¿Borrar todos los items?')) {
+                items = [];
+                updateUI();
+            }
+        });
+
+        function updateJSON() {
+            const config = {
+                items: items,
+                settings: {
+                    duration: parseInt(elements.defaultDuration.value),
+                    transition: elements.transition.value,
+                    loopMode: elements.loopMode.value
+                }
+            };
+
+            elements.jsonOutput.value = JSON.stringify(config, null, 2);
+        }
+
+        elements.defaultDuration.addEventListener('change', updateJSON);
+        elements.transition.addEventListener('change', updateJSON);
+        elements.loopMode.addEventListener('change', updateJSON);
+
+        elements.copyJsonBtn.addEventListener('click', () => {
+            elements.jsonOutput.select();
+            document.execCommand('copy');
+            alert('✅ JSON copiado al portapapeles');
+        });
+
+        elements.downloadJsonBtn.addEventListener('click', () => {
+            const json = elements.jsonOutput.value;
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'config.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        // Inicializar
+        updateJSON();
+    </script>
 </body>
 </html>
