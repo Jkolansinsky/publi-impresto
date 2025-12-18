@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
-    <title>Pantalla Digital Cloud</title>
+    <title>Pantalla Digital - GitHub</title>
     <style>
         * {
             margin: 0;
@@ -12,7 +12,7 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: #000;
             color: white;
             overflow: hidden;
@@ -37,7 +37,7 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 380px;
+            width: 400px;
             height: 100%;
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
@@ -93,9 +93,7 @@
             pointer-events: auto !important;
         }
 
-        .display-content,
-        video,
-        iframe {
+        .display-content, video, iframe {
             width: 100vw;
             height: 100vh;
             object-fit: fill;
@@ -113,16 +111,16 @@
         }
 
         h1 {
-            font-size: 22px;
-            margin-bottom: 20px;
+            font-size: 20px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         h2 {
-            font-size: 16px;
-            margin: 20px 0 10px;
+            font-size: 15px;
+            margin: 15px 0 10px;
             color: #60a5fa;
         }
 
@@ -133,7 +131,7 @@
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             transition: all 0.3s;
             display: flex;
@@ -155,94 +153,126 @@
         .btn-play {
             background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
             color: white;
-            font-size: 16px;
-            padding: 15px;
+            font-size: 15px;
+            padding: 14px;
         }
 
-        .btn-add {
-            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+        .btn-sync {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
         }
 
-        .btn-video {
-            background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);
-            color: white;
-        }
-
-        .btn-url {
-            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
-            color: white;
-        }
-
-        .btn-import {
+        .btn-config {
             background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             color: white;
         }
 
         .config-box {
             background: rgba(51, 51, 51, 0.6);
-            padding: 15px;
+            padding: 12px;
             border-radius: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         label {
             display: block;
-            margin-bottom: 8px;
-            font-size: 13px;
+            margin-bottom: 6px;
+            font-size: 12px;
             color: #d1d5db;
         }
 
-        input[type="number"], select, input[type="text"], textarea {
+        input[type="text"], input[type="number"], select {
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             border-radius: 6px;
             border: 1px solid #555;
             background: #444;
             color: white;
-            font-size: 14px;
+            font-size: 13px;
         }
 
-        textarea {
-            min-height: 100px;
-            font-family: monospace;
-            resize: vertical;
+        .info-box {
+            background: rgba(30, 64, 175, 0.3);
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-size: 11px;
+            border-left: 3px solid #60a5fa;
+            line-height: 1.5;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #93c5fd;
+        }
+
+        .success-box {
+            background: rgba(22, 163, 74, 0.3);
+            border-left-color: #4ade80;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.3);
+            border-left-color: #fbbf24;
+        }
+
+        .error-box {
+            background: rgba(220, 38, 38, 0.3);
+            border-left-color: #f87171;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+
+        .status-synced {
+            background: #10b981;
+            color: white;
+        }
+
+        .status-local {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .status-error {
+            background: #dc2626;
+            color: white;
         }
 
         .content-list {
-            max-height: 350px;
+            max-height: 300px;
             overflow-y: auto;
         }
 
         .content-list::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
 
         .content-list::-webkit-scrollbar-track {
             background: rgba(51, 51, 51, 0.3);
-            border-radius: 4px;
+            border-radius: 3px;
         }
 
         .content-list::-webkit-scrollbar-thumb {
             background: #555;
-            border-radius: 4px;
+            border-radius: 3px;
         }
 
         .content-item {
             background: rgba(51, 51, 51, 0.6);
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 6px;
             border: 2px solid transparent;
             transition: all 0.3s;
-        }
-
-        .content-item:hover {
-            background: rgba(58, 58, 58, 0.7);
         }
 
         .content-item.active {
@@ -250,55 +280,17 @@
             background: rgba(30, 58, 138, 0.5);
         }
 
-        .content-info {
-            flex: 1;
-            min-width: 0;
-        }
-
         .content-name {
-            font-size: 13px;
+            font-size: 12px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         .content-type {
-            font-size: 11px;
+            font-size: 10px;
             color: #9ca3af;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .content-actions {
-            display: flex;
-            gap: 5px;
-        }
-
-        .btn-small {
-            width: 32px;
-            height: 32px;
-            padding: 0;
-            margin: 0;
-            font-size: 14px;
-            min-width: 32px;
-        }
-
-        .btn-delete {
-            background: #dc2626;
-        }
-
-        .btn-delete:hover {
-            background: #b91c1c;
-        }
-
-        .btn-move {
-            background: #64748b;
-        }
-
-        .btn-move:hover {
-            background: #475569;
         }
 
         .empty-state {
@@ -315,6 +307,32 @@
             font-size: 80px;
             margin-bottom: 20px;
             opacity: 0.5;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: #2563eb;
+            transition: width 0.1s linear;
+            z-index: 5;
+        }
+
+        code {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 11px;
         }
 
         .modal {
@@ -337,7 +355,7 @@
 
         .modal-content {
             background: #2a2a2a;
-            padding: 30px;
+            padding: 25px;
             border-radius: 12px;
             width: 90%;
             max-width: 600px;
@@ -348,86 +366,24 @@
 
         .modal-content h2 {
             margin-top: 0;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .modal-buttons {
             display: flex;
             gap: 10px;
-            margin-top: 20px;
+            margin-top: 15px;
         }
 
-        .info-box {
-            background: rgba(30, 64, 175, 0.3);
-            padding: 12px;
-            border-radius: 6px;
-            margin: 15px 0;
-            font-size: 12px;
-            border-left: 4px solid #60a5fa;
-        }
-
-        .info-box strong {
-            display: block;
-            margin-bottom: 5px;
-            color: #93c5fd;
-        }
-
-        .success-box {
-            background: rgba(22, 163, 74, 0.3);
-            border-left-color: #4ade80;
-        }
-
-        .warning-box {
-            background: rgba(245, 158, 11, 0.3);
-            border-left-color: #fbbf24;
-            color: #fef3c7;
-        }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .progress-bar {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            height: 4px;
-            background: #2563eb;
-            transition: width 0.1s linear;
-            z-index: 5;
-        }
-
-        .url-type-selector {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .url-type-btn {
+        textarea {
+            width: 100%;
+            min-height: 120px;
             padding: 10px;
-            border: 2px solid #444;
-            background: #333;
-            color: white;
             border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .url-type-btn.active {
-            border-color: #2563eb;
-            background: #1e3a8a;
-        }
-
-        code {
-            background: rgba(0,0,0,0.3);
-            padding: 2px 6px;
-            border-radius: 3px;
+            border: 1px solid #555;
+            background: #444;
+            color: white;
+            font-family: monospace;
             font-size: 12px;
         }
     </style>
@@ -435,9 +391,9 @@
 <body>
     <div class="display-area" id="displayArea">
         <div class="empty-state" id="emptyState">
-            <div class="empty-state-icon">☁️📺</div>
-            <p style="font-size: 20px; margin-bottom: 10px;">Pantalla Digital Cloud</p>
-            <p>Agrega contenido usando URLs de imágenes o videos</p>
+            <div class="empty-state-icon">📺</div>
+            <p style="font-size: 20px; margin-bottom: 10px;">Pantalla Digital - GitHub</p>
+            <p>Configura la URL del config.json para comenzar</p>
         </div>
         <div id="displayContent"></div>
         <div class="progress-bar" id="progressBar" style="width: 0%; display: none;"></div>
@@ -446,11 +402,24 @@
     <div class="hover-zone"></div>
 
     <div class="sidebar" id="sidebar">
-        <h1>☁️ Pantalla Digital Cloud</h1>
+        <h1>
+            📺 Pantalla GitHub
+            <span class="status-badge status-local" id="statusBadge">Local</span>
+        </h1>
 
         <button class="btn-play" id="playBtn" disabled>
             <span id="playIcon">▶️</span>
             <span id="playText">Reproducir</span>
+        </button>
+
+        <button class="btn-sync" id="syncBtn">
+            <span>🔄</span>
+            <span>Sincronizar Ahora</span>
+        </button>
+
+        <button class="btn-config" id="configBtn">
+            <span>⚙️</span>
+            <span>Configurar URL del JSON</span>
         </button>
 
         <div class="config-box">
@@ -459,144 +428,67 @@
         </div>
 
         <div class="config-box">
-            <label>✨ Efecto de transición</label>
-            <select id="transition">
-                <option value="fade">Fundido suave</option>
-                <option value="none">Sin efecto</option>
-            </select>
+            <label>🔄 Auto-sincronizar cada (minutos)</label>
+            <input type="number" id="autoSyncInterval" value="5" min="0" max="60">
+            <small style="color: #9ca3af; font-size: 10px;">0 = desactivado</small>
         </div>
 
-        <div class="config-box">
-            <label>🔁 Reproducción en bucle</label>
-            <select id="loopMode">
-                <option value="true">Sí (repetir siempre)</option>
-                <option value="false">No (parar al final)</option>
-            </select>
+        <div class="info-box success-box" id="syncInfo" style="display: none;">
+            <strong>✅ Sincronizado</strong>
+            <span id="syncTime"></span>
         </div>
 
-        <h2>➕ Agregar Contenido</h2>
-        
-        <button class="btn-add" id="addImageBtn">
-            <span>🖼️</span>
-            <span>Agregar Imagen (URL)</span>
-        </button>
+        <div class="info-box error-box" id="errorInfo" style="display: none;">
+            <strong>❌ Error</strong>
+            <span id="errorMessage"></span>
+        </div>
 
-        <button class="btn-video" id="addVideoBtn">
-            <span>🎬</span>
-            <span>Agregar Video (URL)</span>
-        </button>
-
-        <button class="btn-url" id="addWebpageBtn">
-            <span>🌐</span>
-            <span>Agregar Página Web</span>
-        </button>
-
-        <button class="btn-import" id="importJsonBtn">
-            <span>📥</span>
-            <span>Importar Lista JSON</span>
-        </button>
-
-        <div class="info-box success-box">
-            <strong>☁️ Modo Cloud:</strong>
-            • Usa URLs directas de Google Drive, Imgur, Dropbox<br>
-            • Los cambios se guardan en el navegador<br>
-            • Exporta/Importa tu configuración en JSON
+        <div class="info-box">
+            <strong>📌 Configuración actual:</strong>
+            <div id="currentUrl" style="word-break: break-all; margin-top: 5px; color: #93c5fd;">
+                No configurada
+            </div>
         </div>
 
         <div class="info-box warning-box">
-            <strong>📌 Cómo obtener URLs:</strong>
-            • <strong>Google Drive:</strong> Hacer público → Copiar enlace directo<br>
-            • <strong>Imgur:</strong> Subir imagen → Copiar "Direct Link"<br>
-            • <strong>Videos:</strong> YouTube, Vimeo (se verá en iframe)
+            <strong>💡 URL del config.json:</strong>
+            <code style="display: block; margin-top: 5px;">
+                https://raw.githubusercontent.com/<br>
+                USUARIO/REPO/main/config.json
+            </code>
         </div>
 
         <h2>📋 Contenido (<span id="itemCount">0</span>)</h2>
-        
-        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
-            <button class="btn-import" id="exportJsonBtn" style="flex: 1; font-size: 12px;">
-                📤 Exportar
-            </button>
-            <button class="btn-delete" id="clearAllBtn" style="flex: 1; background: #dc2626; font-size: 12px;">
-                🗑️ Borrar Todo
-            </button>
-        </div>
-        
         <div class="content-list" id="contentList"></div>
     </div>
 
     <button class="toggle-btn" id="toggleBtn">⚙️</button>
 
-    <!-- Modal para Imagen -->
-    <div class="modal" id="imageModal">
+    <!-- Modal Configuración -->
+    <div class="modal" id="configModal">
         <div class="modal-content">
-            <h2>🖼️ Agregar Imagen</h2>
-            <label>URL de la imagen</label>
-            <input type="text" id="imageUrl" placeholder="https://i.imgur.com/ejemplo.jpg">
-            <label style="margin-top: 15px;">Duración (segundos)</label>
-            <input type="number" id="imageDuration" value="8" min="1" max="300">
+            <h2>⚙️ Configurar URL del config.json</h2>
+            
+            <label>URL completa del config.json en GitHub:</label>
+            <textarea id="configUrl" placeholder="https://raw.githubusercontent.com/usuario/repo/main/config.json"></textarea>
+            
             <div class="info-box">
-                <strong>💡 Ejemplo de URL válida:</strong>
-                • https://i.imgur.com/abc123.jpg<br>
-                • https://drive.google.com/uc?id=FILE_ID<br>
-                • https://www.dropbox.com/s/xxx/image.jpg?raw=1
+                <strong>📝 Ejemplo de URL correcta:</strong>
+                <code style="display: block; margin-top: 5px; word-break: break-all;">
+                    https://raw.githubusercontent.com/juanperez/pantalla-digital/main/config.json
+                </code>
             </div>
-            <div class="modal-buttons">
-                <button class="btn-add" id="addImageConfirmBtn">Agregar</button>
-                <button class="btn-move" id="cancelImageBtn">Cancelar</button>
-            </div>
-        </div>
-    </div>
 
-    <!-- Modal para Video -->
-    <div class="modal" id="videoModal">
-        <div class="modal-content">
-            <h2>🎬 Agregar Video</h2>
-            <label>URL del video</label>
-            <input type="text" id="videoUrl" placeholder="https://example.com/video.mp4">
-            <div class="info-box">
-                <strong>💡 Formatos soportados:</strong>
-                • <strong>Directo:</strong> .mp4, .webm (URL directa del archivo)<br>
-                • <strong>YouTube:</strong> https://www.youtube.com/embed/VIDEO_ID<br>
-                • <strong>Vimeo:</strong> https://player.vimeo.com/video/VIDEO_ID
-            </div>
-            <div class="modal-buttons">
-                <button class="btn-video" id="addVideoConfirmBtn">Agregar</button>
-                <button class="btn-move" id="cancelVideoBtn">Cancelar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal para Página Web -->
-    <div class="modal" id="webpageModal">
-        <div class="modal-content">
-            <h2>🌐 Agregar Página Web</h2>
-            <label>URL de la página</label>
-            <input type="text" id="webpageUrl" placeholder="https://ejemplo.com">
-            <label style="margin-top: 15px;">Duración (segundos)</label>
-            <input type="number" id="webpageDuration" value="15" min="5" max="300">
             <div class="info-box warning-box">
-                ℹ️ Algunas páginas no permiten ser mostradas en iframe (ej: Google, Facebook)
+                <strong>⚠️ IMPORTANTE:</strong><br>
+                • Debe ser la URL RAW (raw.githubusercontent.com)<br>
+                • Tu repositorio debe ser PÚBLICO<br>
+                • El archivo config.json debe existir en el repo
             </div>
-            <div class="modal-buttons">
-                <button class="btn-url" id="addWebpageConfirmBtn">Agregar</button>
-                <button class="btn-move" id="cancelWebpageBtn">Cancelar</button>
-            </div>
-        </div>
-    </div>
 
-    <!-- Modal para Importar JSON -->
-    <div class="modal" id="importModal">
-        <div class="modal-content">
-            <h2>📥 Importar Configuración</h2>
-            <label>Pega tu JSON aquí:</label>
-            <textarea id="importJson" placeholder='{"items": [...], "settings": {...}}'></textarea>
-            <div class="info-box">
-                <strong>💡 Formato esperado:</strong>
-                <code>{"items": [...], "settings": {...}}</code>
-            </div>
             <div class="modal-buttons">
-                <button class="btn-import" id="importConfirmBtn">Importar</button>
-                <button class="btn-move" id="cancelImportBtn">Cancelar</button>
+                <button class="btn-config" id="saveConfigBtn">Guardar</button>
+                <button class="btn-sync" id="cancelConfigBtn" style="background: #64748b;">Cancelar</button>
             </div>
         </div>
     </div>
@@ -607,6 +499,8 @@
         let isPlaying = false;
         let timer = null;
         let progressInterval = null;
+        let autoSyncTimer = null;
+        let configUrl = '';
 
         const elements = {
             sidebar: document.getElementById('sidebar'),
@@ -618,96 +512,107 @@
             displayContent: document.getElementById('displayContent'),
             emptyState: document.getElementById('emptyState'),
             duration: document.getElementById('duration'),
-            transition: document.getElementById('transition'),
-            loopMode: document.getElementById('loopMode'),
             itemCount: document.getElementById('itemCount'),
             progressBar: document.getElementById('progressBar'),
-            clearAllBtn: document.getElementById('clearAllBtn'),
-            
-            // Modales
-            imageModal: document.getElementById('imageModal'),
-            imageUrl: document.getElementById('imageUrl'),
-            imageDuration: document.getElementById('imageDuration'),
-            addImageBtn: document.getElementById('addImageBtn'),
-            addImageConfirmBtn: document.getElementById('addImageConfirmBtn'),
-            cancelImageBtn: document.getElementById('cancelImageBtn'),
-            
-            videoModal: document.getElementById('videoModal'),
-            videoUrl: document.getElementById('videoUrl'),
-            addVideoBtn: document.getElementById('addVideoBtn'),
-            addVideoConfirmBtn: document.getElementById('addVideoConfirmBtn'),
-            cancelVideoBtn: document.getElementById('cancelVideoBtn'),
-            
-            webpageModal: document.getElementById('webpageModal'),
-            webpageUrl: document.getElementById('webpageUrl'),
-            webpageDuration: document.getElementById('webpageDuration'),
-            addWebpageBtn: document.getElementById('addWebpageBtn'),
-            addWebpageConfirmBtn: document.getElementById('addWebpageConfirmBtn'),
-            cancelWebpageBtn: document.getElementById('cancelWebpageBtn'),
-            
-            importModal: document.getElementById('importModal'),
-            importJson: document.getElementById('importJson'),
-            importJsonBtn: document.getElementById('importJsonBtn'),
-            importConfirmBtn: document.getElementById('importConfirmBtn'),
-            cancelImportBtn: document.getElementById('cancelImportBtn'),
-            exportJsonBtn: document.getElementById('exportJsonBtn')
+            statusBadge: document.getElementById('statusBadge'),
+            syncBtn: document.getElementById('syncBtn'),
+            configBtn: document.getElementById('configBtn'),
+            autoSyncInterval: document.getElementById('autoSyncInterval'),
+            syncInfo: document.getElementById('syncInfo'),
+            syncTime: document.getElementById('syncTime'),
+            errorInfo: document.getElementById('errorInfo'),
+            errorMessage: document.getElementById('errorMessage'),
+            configModal: document.getElementById('configModal'),
+            configUrl: document.getElementById('configUrl'),
+            saveConfigBtn: document.getElementById('saveConfigBtn'),
+            cancelConfigBtn: document.getElementById('cancelConfigBtn'),
+            currentUrl: document.getElementById('currentUrl')
         };
 
-        // Guardar en localStorage
-        function saveData() {
-            const config = {
-                items,
-                currentIndex,
-                isPlaying,
-                settings: {
-                    duration: elements.duration.value,
-                    transition: elements.transition.value,
-                    loopMode: elements.loopMode.value
-                }
-            };
-            localStorage.setItem('digitalSignageConfig', JSON.stringify(config));
+        // Cargar configuración guardada
+        function loadLocalConfig() {
+            const saved = localStorage.getItem('githubConfigUrl');
+            if (saved) {
+                configUrl = saved;
+                elements.configUrl.value = saved;
+                elements.currentUrl.textContent = saved;
+            }
+            const interval = localStorage.getItem('autoSyncInterval');
+            if (interval) {
+                elements.autoSyncInterval.value = interval;
+            }
         }
 
-        // Cargar desde localStorage
-        function loadData() {
+        // Sincronizar desde GitHub
+        async function syncFromGitHub() {
+            if (!configUrl) {
+                showError('No hay URL configurada. Haz clic en "Configurar URL"');
+                return;
+            }
+
             try {
-                const stored = localStorage.getItem('digitalSignageConfig');
-                if (!stored) return;
+                elements.syncBtn.disabled = true;
+                elements.syncBtn.innerHTML = '<span>⏳</span><span>Sincronizando...</span>';
+                
+                // Agregar timestamp para evitar caché
+                const response = await fetch(configUrl + '?t=' + Date.now());
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const config = await response.json();
+                
+                // Validar estructura
+                if (!config.items || !Array.isArray(config.items)) {
+                    throw new Error('El JSON no tiene un array "items" válido');
+                }
 
-                const config = JSON.parse(stored);
-                items = config.items || [];
-                currentIndex = config.currentIndex || 0;
-                isPlaying = config.isPlaying || false;
+                // Actualizar datos
+                items = config.items;
+                currentIndex = 0;
 
-                const s = config.settings || {};
-                elements.duration.value = s.duration || 8;
-                elements.transition.value = s.transition || 'fade';
-                elements.loopMode.value = s.loopMode || 'true';
+                if (config.settings) {
+                    elements.duration.value = config.settings.duration || 8;
+                }
 
                 updateUI();
+                
+                // Actualizar status
+                elements.statusBadge.textContent = '✓ Sincronizado';
+                elements.statusBadge.className = 'status-badge status-synced';
+                
+                elements.syncInfo.style.display = 'block';
+                elements.errorInfo.style.display = 'none';
+                elements.syncTime.textContent = `Última sincronización: ${new Date().toLocaleTimeString()}`;
+                
+                elements.syncBtn.disabled = false;
+                elements.syncBtn.innerHTML = '<span>🔄</span><span>Sincronizar Ahora</span>';
 
                 if (items.length > 0) {
                     elements.emptyState.style.display = 'none';
-                    if (isPlaying) {
-                        elements.playIcon.textContent = '⏸️';
-                        elements.playText.textContent = 'Pausar';
-                        showCurrentItem();
+                    if (!isPlaying) {
                         setTimeout(() => {
-                            elements.sidebar.classList.add('hidden');
-                        }, 2000);
+                            if (!isPlaying) elements.playBtn.click();
+                        }, 1000);
                     } else {
-                        showCurrentItemNoAutoplay();
+                        showCurrentItem();
                     }
                 }
 
-                if (items.length > 0 && !isPlaying) {
-                    setTimeout(() => {
-                        if (!isPlaying) elements.playBtn.click();
-                    }, 3000);
-                }
-            } catch (e) {
-                console.error('Error cargando configuración:', e);
+            } catch (error) {
+                showError(error.message);
+                elements.syncBtn.disabled = false;
+                elements.syncBtn.innerHTML = '<span>🔄</span><span>Sincronizar Ahora</span>';
             }
+        }
+
+        function showError(message) {
+            elements.statusBadge.textContent = '✗ Error';
+            elements.statusBadge.className = 'status-badge status-error';
+            elements.errorInfo.style.display = 'block';
+            elements.syncInfo.style.display = 'none';
+            elements.errorMessage.textContent = message;
         }
 
         function updateUI() {
@@ -722,34 +627,22 @@
                 const icon = item.type === 'image' ? '🖼️' : 
                             item.type === 'video' ? '🎬' : '🌐';
                 const type = item.type === 'image' ? 'Imagen' : 
-                            item.type === 'video' ? 'Video' : 'Página Web';
-                const name = item.name || getUrlFilename(item.src);
+                            item.type === 'video' ? 'Video' : 'Página';
+                const name = item.name || getFilename(item.src);
                 
                 div.innerHTML = `
-                    <div class="content-info">
-                        <div class="content-name">${name}</div>
-                        <div class="content-type">
-                            <span>${icon}</span>
-                            <span>${type}</span>
-                        </div>
-                    </div>
-                    <div class="content-actions">
-                        <button class="btn-small btn-move" onclick="moveItem(${index}, -1)" title="Subir">↑</button>
-                        <button class="btn-small btn-move" onclick="moveItem(${index}, 1)" title="Bajar">↓</button>
-                        <button class="btn-small btn-delete" onclick="deleteItem(${index})" title="Eliminar">🗑️</button>
-                    </div>
+                    <div class="content-name">${icon} ${name}</div>
+                    <div class="content-type">${type} - ${item.duration || 8}s</div>
                 `;
                 elements.contentList.appendChild(div);
             });
         }
 
-        function getUrlFilename(url) {
+        function getFilename(url) {
             try {
-                const urlObj = new URL(url);
-                const path = urlObj.pathname;
-                return path.split('/').pop() || url.substring(0, 30) + '...';
+                return url.split('/').pop() || url.substring(0, 25) + '...';
             } catch {
-                return url.substring(0, 30) + '...';
+                return url.substring(0, 25) + '...';
             }
         }
 
@@ -778,25 +671,35 @@
             if (!item) return;
 
             elements.emptyState.style.display = 'none';
-            const transition = elements.transition.value;
-            const className = transition === 'fade' ? 'fade-in' : '';
+            const className = 'fade-in';
 
             if (item.type === 'image') {
                 elements.displayContent.innerHTML = `
                     <img src="${item.src}" class="display-content ${className}" 
-                         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 fill=%22%23666%22%3EError al cargar%3C/text%3E%3C/svg%3E'">
+                         onerror="this.style.display='none';">
                 `;
                 const duration = item.duration || parseInt(elements.duration.value) || 8;
                 startProgress(duration);
                 timer = setTimeout(nextItem, duration * 1000);
                 
             } else if (item.type === 'video') {
-                // Detectar si es YouTube o Vimeo
-                if (item.src.includes('youtube.com') || item.src.includes('youtu.be') || item.src.includes('vimeo.com')) {
+                // Detectar tipo de video
+                if (item.src.includes('youtube.com') || item.src.includes('youtu.be') || 
+                    item.src.includes('vimeo.com') || item.src.includes('drive.google.com')) {
+                    
                     let embedUrl = item.src;
+                    
                     if (item.src.includes('watch?v=')) {
-                        embedUrl = item.src.replace('watch?v=', 'embed/');
+                        embedUrl = item.src.replace('watch?v=', 'embed/').split('&')[0];
                     }
+                    
+                    if (item.src.includes('drive.google.com') && !item.src.includes('/preview')) {
+                        const fileId = item.src.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                        if (fileId) {
+                            embedUrl = `https://drive.google.com/file/d/${fileId[1]}/preview`;
+                        }
+                    }
+                    
                     elements.displayContent.innerHTML = `
                         <iframe src="${embedUrl}" class="${className}" 
                                 allow="autoplay; fullscreen" allowfullscreen></iframe>
@@ -809,7 +712,6 @@
                         <div class="video-container ${className}">
                             <video class="display-content" autoplay muted playsinline>
                                 <source src="${item.src}" type="video/mp4">
-                                Tu navegador no soporta video.
                             </video>
                         </div>
                     `;
@@ -823,10 +725,9 @@
                 
             } else if (item.type === 'webpage') {
                 elements.displayContent.innerHTML = `
-                    <iframe src="${item.src}" class="${className}" 
-                            sandbox="allow-same-origin allow-scripts allow-forms"></iframe>
+                    <iframe src="${item.src}" class="${className}"></iframe>
                 `;
-                const duration = item.duration || parseInt(elements.duration.value) || 15;
+                const duration = item.duration || 15;
                 startProgress(duration);
                 timer = setTimeout(nextItem, duration * 1000);
             }
@@ -834,87 +735,31 @@
             updateUI();
         }
 
-        
-
-
-function showCurrentItemNoAutoplay() {
-            if (items.length === 0) return;
-            const item = items[currentIndex];
-            const transition = elements.transition.value;
-            const className = transition === 'fade' ? 'fade-in' : '';
-
-            if (item.type === 'image') {
-                elements.displayContent.innerHTML = `
-                    <img src="${item.src}" class="display-content ${className}">
-                `;
-            } else if (item.type === 'video') {
-                if (item.src.includes('youtube.com') || item.src.includes('youtu.be') || item.src.includes('vimeo.com')) {
-                    let embedUrl = item.src;
-                    if (item.src.includes('watch?v=')) {
-                        embedUrl = item.src.replace('watch?v=', 'embed/');
-                    }
-                    elements.displayContent.innerHTML = `
-                        <iframe src="${embedUrl}" class="${className}"></iframe>
-                    `;
-                } else {
-                    elements.displayContent.innerHTML = `
-                        <div class="video-container ${className}">
-                            <video class="display-content" preload="metadata">
-                                <source src="${item.src}" type="video/mp4">
-                            </video>
-                        </div>
-                    `;
-                }
-            } else if (item.type === 'webpage') {
-                elements.displayContent.innerHTML = `
-                    <iframe src="${item.src}" class="${className}"></iframe>
-                `;
-            }
-        }
-
         function nextItem() {
             clearTimeout(timer);
             clearInterval(progressInterval);
             
             if (currentIndex >= items.length - 1) {
-                if (elements.loopMode.value === 'true') {
-                    currentIndex = 0;
-                    showCurrentItem();
-                } else {
-                    isPlaying = false;
-                    elements.playIcon.textContent = '▶️';
-                    elements.playText.textContent = 'Reproducir';
-                    currentIndex = 0;
-                    updateUI();
-                }
+                currentIndex = 0;
+                showCurrentItem();
             } else {
                 currentIndex++;
                 showCurrentItem();
             }
         }
 
-        function deleteItem(index) {
-            if (!confirm('¿Eliminar este elemento?')) return;
-            items.splice(index, 1);
-            if (currentIndex >= items.length) currentIndex = 0;
-            updateUI();
-            saveData();
-            if (isPlaying && items.length > 0) showCurrentItem();
-            else if (items.length === 0) {
-                elements.displayContent.innerHTML = '';
-                elements.emptyState.style.display = 'block';
+        // Auto-sincronización
+        function setupAutoSync() {
+            clearInterval(autoSyncTimer);
+            const interval = parseInt(elements.autoSyncInterval.value);
+            
+            if (interval > 0 && configUrl) {
+                autoSyncTimer = setInterval(() => {
+                    syncFromGitHub();
+                }, interval * 60 * 1000);
             }
-        }
-
-        function moveItem(index, direction) {
-            const newIndex = index + direction;
-            if (newIndex >= 0 && newIndex < items.length) {
-                [items[index], items[newIndex]] = [items[newIndex], items[index]];
-                if (currentIndex === index) currentIndex = newIndex;
-                else if (currentIndex === newIndex) currentIndex = index;
-                updateUI();
-                saveData();
-            }
+            
+            localStorage.setItem('autoSyncInterval', interval);
         }
 
         // Event Listeners
@@ -931,7 +776,6 @@ function showCurrentItemNoAutoplay() {
                 clearInterval(progressInterval);
                 elements.progressBar.style.display = 'none';
             }
-            saveData();
         });
 
         elements.toggleBtn?.addEventListener('click', (e) => {
@@ -939,200 +783,34 @@ function showCurrentItemNoAutoplay() {
             elements.sidebar.classList.toggle('hidden');
         });
 
-        elements.clearAllBtn?.addEventListener('click', () => {
-            if (confirm('¿Estás seguro de que deseas borrar todo el contenido guardado?')) {
-                items = [];
-                currentIndex = 0;
-                isPlaying = false;
-                saveData();
-                elements.displayContent.innerHTML = '';
-                elements.emptyState.style.display = 'block';
-                updateUI();
-            }
+        elements.syncBtn?.addEventListener('click', syncFromGitHub);
+
+        elements.configBtn?.addEventListener('click', () => {
+            elements.configModal.classList.add('show');
         });
 
-        elements.duration?.addEventListener('change', saveData);
-        elements.transition?.addEventListener('change', saveData);
-        elements.loopMode?.addEventListener('change', saveData);
-
-        // Modal Imagen
-        elements.addImageBtn?.addEventListener('click', () => {
-            elements.imageModal.classList.add('show');
+        elements.cancelConfigBtn?.addEventListener('click', () => {
+            elements.configModal.classList.remove('show');
         });
 
-        elements.cancelImageBtn?.addEventListener('click', () => {
-            elements.imageModal.classList.remove('show');
-            elements.imageUrl.value = '';
-        });
-
-        elements.addImageConfirmBtn?.addEventListener('click', () => {
-            const url = elements.imageUrl.value.trim();
-            const duration = parseInt(elements.imageDuration.value);
-            
+        elements.saveConfigBtn?.addEventListener('click', () => {
+            const url = elements.configUrl.value.trim();
             if (!url) {
                 alert('⚠️ Ingresa una URL válida');
                 return;
             }
             
-            items.push({
-                id: Date.now(),
-                type: 'image',
-                src: url,
-                name: getUrlFilename(url),
-                duration: duration
-            });
-
-            elements.imageModal.classList.remove('show');
-            elements.imageUrl.value = '';
-            updateUI();
-            saveData();
-
-            if (!isPlaying && items.length === 1) {
-                setTimeout(() => { if (!isPlaying) elements.playBtn.click(); }, 500);
-            }
-        });
-
-        // Modal Video
-        elements.addVideoBtn?.addEventListener('click', () => {
-            elements.videoModal.classList.add('show');
-        });
-
-        elements.cancelVideoBtn?.addEventListener('click', () => {
-            elements.videoModal.classList.remove('show');
-            elements.videoUrl.value = '';
-        });
-
-        elements.addVideoConfirmBtn?.addEventListener('click', () => {
-            const url = elements.videoUrl.value.trim();
+            configUrl = url;
+            localStorage.setItem('githubConfigUrl', url);
+            elements.currentUrl.textContent = url;
+            elements.configModal.classList.remove('show');
             
-            if (!url) {
-                alert('⚠️ Ingresa una URL válida');
-                return;
-            }
-            
-            items.push({
-                id: Date.now(),
-                type: 'video',
-                src: url,
-                name: getUrlFilename(url),
-                duration: 30
-            });
-
-            elements.videoModal.classList.remove('show');
-            elements.videoUrl.value = '';
-            updateUI();
-            saveData();
-
-            if (!isPlaying && items.length === 1) {
-                setTimeout(() => { if (!isPlaying) elements.playBtn.click(); }, 500);
-            }
+            syncFromGitHub();
         });
 
-        // Modal Webpage
-        elements.addWebpageBtn?.addEventListener('click', () => {
-            elements.webpageModal.classList.add('show');
-        });
+        elements.autoSyncInterval?.addEventListener('change', setupAutoSync);
 
-        elements.cancelWebpageBtn?.addEventListener('click', () => {
-            elements.webpageModal.classList.remove('show');
-            elements.webpageUrl.value = '';
-        });
-
-        elements.addWebpageConfirmBtn?.addEventListener('click', () => {
-            const url = elements.webpageUrl.value.trim();
-            const duration = parseInt(elements.webpageDuration.value);
-            
-            if (!url) {
-                alert('⚠️ Ingresa una URL válida');
-                return;
-            }
-            
-            items.push({
-                id: Date.now(),
-                type: 'webpage',
-                src: url,
-                name: getUrlFilename(url),
-                duration: duration
-            });
-
-            elements.webpageModal.classList.remove('show');
-            elements.webpageUrl.value = '';
-            updateUI();
-            saveData();
-
-            if (!isPlaying && items.length === 1) {
-                setTimeout(() => { if (!isPlaying) elements.playBtn.click(); }, 500);
-            }
-        });
-
-        // Importar/Exportar JSON
-        elements.exportJsonBtn?.addEventListener('click', () => {
-            const config = {
-                items,
-                settings: {
-                    duration: elements.duration.value,
-                    transition: elements.transition.value,
-                    loopMode: elements.loopMode.value
-                }
-            };
-            
-            const json = JSON.stringify(config, null, 2);
-            const blob = new Blob([json], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `pantalla-digital-${Date.now()}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-        });
-
-        elements.importJsonBtn?.addEventListener('click', () => {
-            elements.importModal.classList.add('show');
-        });
-
-        elements.cancelImportBtn?.addEventListener('click', () => {
-            elements.importModal.classList.remove('show');
-            elements.importJson.value = '';
-        });
-
-        elements.importConfirmBtn?.addEventListener('click', () => {
-            try {
-                const json = elements.importJson.value.trim();
-                if (!json) {
-                    alert('⚠️ Pega el JSON primero');
-                    return;
-                }
-
-                const config = JSON.parse(json);
-                
-                if (config.items && Array.isArray(config.items)) {
-                    items = config.items;
-                }
-                
-                if (config.settings) {
-                    elements.duration.value = config.settings.duration || 8;
-                    elements.transition.value = config.settings.transition || 'fade';
-                    elements.loopMode.value = config.settings.loopMode || 'true';
-                }
-
-                elements.importModal.classList.remove('show');
-                elements.importJson.value = '';
-                updateUI();
-                saveData();
-                alert('✅ Configuración importada correctamente');
-
-                if (!isPlaying && items.length > 0) {
-                    setTimeout(() => { if (!isPlaying) elements.playBtn.click(); }, 500);
-                }
-            } catch (e) {
-                alert('❌ Error al importar JSON:\n' + e.message);
-            }
-        });
-
-        // Iniciar
-        loadData();
-
-        // Auto-ocultar botón toggle
+        // Auto-ocultar botón
         let hideButtonTimeout;
         function autoHideToggleButton() {
             clearTimeout(hideButtonTimeout);
@@ -1149,6 +827,12 @@ function showCurrentItemNoAutoplay() {
             }
         });
 
+        // Iniciar
+        loadLocalConfig();
+        if (configUrl) {
+            syncFromGitHub();
+        }
+        setupAutoSync();
         setTimeout(autoHideToggleButton, 3000);
     </script>
 </body>
